@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  fingerprint-api:
+    build:
+      context: ./fingerprint-api
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./fingerprint-api:/app
+      - ./fingerprint_models:/app/fingerprint_models
+      - ./fingerprint_adapting_dataset:/app/fingerprint_adapting_dataset
+      - ./fingerprint_adapting_models:/app/fingerprint_adapting_models
+      - ./processed_fingerprints:/app/processed_fingerprints
+    restart: unless-stopped

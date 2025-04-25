@@ -1,0 +1,12 @@
+[
+    {
+        "name": "SOCOFing-Training",
+        "purpose": "recognition and segmentation",
+        "sampleCount": 6000,
+        "createdAt": "2025-03-23T13:35:04.698449",
+        "updatedAt": "2025-03-23T13:35:04.698449",
+        "source": "https://www.kaggle.com/datasets/ruizgara/socofing",
+        "resolution": "256x256",
+        "format": "TIFF"
+    }
+]

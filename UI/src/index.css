@@ -1,0 +1,138 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Toàn cục */
+body {
+  @apply bg-gray-50 font-sans text-gray-900;
+  line-height: 1.6;
+}
+
+/* Nút */
+.btn {
+  @apply px-4 py-2 rounded-md transition-all duration-300 ease-in-out;
+}
+
+.btn-primary {
+  @apply bg-blue-600 text-white hover:bg-blue-700;
+}
+
+.btn-secondary {
+  @apply bg-gray-200 text-gray-800 hover:bg-gray-300;
+}
+
+.btn-success {
+  @apply bg-green-500 text-white hover:bg-green-600;
+}
+
+.btn-danger {
+  @apply bg-red-500 text-white hover:bg-red-600;
+}
+
+.btn-warning {
+  @apply bg-yellow-500 text-white hover:bg-yellow-600;
+}
+
+/* Bảng */
+.table {
+  @apply w-full border-collapse;
+}
+
+.table thead {
+  @apply bg-gray-100;
+}
+
+.table th, .table td {
+  @apply p-3 border-b border-gray-200 text-left;
+}
+
+.table tr:hover {
+  @apply bg-gray-50;
+}
+
+/* Thẻ */
+.card {
+  @apply bg-white shadow-md rounded-lg overflow-hidden;
+}
+
+.card-header {
+  @apply p-4 border-b bg-gray-50;
+}
+
+.card-body {
+  @apply p-4;
+}
+
+/* Nhập liệu */
+.input {
+  @apply w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500;
+}
+
+/* Thông báo */
+.alert {
+  @apply p-4 rounded-md mb-4;
+}
+
+.alert-success {
+  @apply bg-green-100 text-green-800;
+}
+
+.alert-danger {
+  @apply bg-red-100 text-red-800;
+}
+
+.alert-warning {
+  @apply bg-yellow-100 text-yellow-800;
+}
+
+.alert-info {
+  @apply bg-blue-100 text-blue-800;
+}
+
+/* Hiệu ứng */
+.hover-lift {
+  @apply transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg;
+}
+
+/* Trạng thái */
+.status-active {
+  @apply bg-green-500 text-white;
+}
+
+.status-inactive {
+  @apply bg-gray-500 text-white;
+}
+
+/* Thanh cuộn tùy chỉnh */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .container {
+    @apply px-4;
+  }
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
