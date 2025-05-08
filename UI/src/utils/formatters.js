@@ -1,4 +1,3 @@
-// Định dạng vị trí dấu vân tay
 export const formatFingerprintPosition = (position) => {
   if (!position) return "Không xác định";
 
@@ -8,7 +7,6 @@ export const formatFingerprintPosition = (position) => {
     .replace(/\b\w/g, (letter) => letter.toUpperCase());
 };
 
-// Định dạng ngày tháng
 export const formatDate = (date) => {
   if (!date) return "Chưa có";
 
@@ -19,12 +17,10 @@ export const formatDate = (date) => {
   });
 };
 
-// Định dạng số lượng dấu vân tay
 export const formatFingerprintCount = (active, total) => {
   return `${active} / ${total}`;
 };
 
-// Hàm tiện ích để cắt ngắn chuỗi
 export const truncateString = (str, maxLength = 20) => {
   if (!str) return "";
 

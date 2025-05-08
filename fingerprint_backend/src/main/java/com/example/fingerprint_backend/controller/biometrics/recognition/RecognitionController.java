@@ -33,11 +33,6 @@ public class RecognitionController {
         return recognitionRepository.findByEmployeeId(employeeId);
     }
 
-    @GetMapping("/confidence/{threshold}")
-    public List<Recognition> getRecognitionsByConfidence(@PathVariable float threshold) {
-        return recognitionRepository.findByConfidenceGreaterThan(threshold);
-    }
-
     @PostMapping
     public Recognition createRecognition(@RequestBody Recognition recognition) {
         return recognitionRepository.save(recognition);

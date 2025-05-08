@@ -13,10 +13,10 @@ import java.util.Optional;
 
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, String> {
-    @Query("SELECT new Employee(e.id, e.fullName, e.phoneNumber, e.photo, e.address, e.maxNumberSamples) FROM Employee e")
+    @Query("SELECT new Employee(e.id, e.fullName, e.phoneNumber, e.address, e.maxNumberSamples) FROM Employee e")
     List<Employee> findAllEmployees();
 
-    @Query("SELECT new Employee(e.id, e.fullName, e.phoneNumber, e.photo, e.address, e.maxNumberSamples) FROM Employee e WHERE e.id = :id")
+    @Query("SELECT new Employee(e.id, e.fullName, e.phoneNumber, e.address, e.maxNumberSamples) FROM Employee e WHERE e.id = :id")
     Optional<Employee> findById(String id);
 
     @Query("SELECT new com.example.fingerprint_backend.model.analytics.EmployeeStatistics(" +

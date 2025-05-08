@@ -1,7 +1,6 @@
 package com.example.fingerprint_backend.model.auth;
 
 import com.example.fingerprint_backend.model.base.User;
-import com.example.fingerprint_backend.model.biometrics.fingerprint.FingerprintSample;
 import com.example.fingerprint_backend.model.biometrics.recognition.Recognition;
 import com.example.fingerprint_backend.model.access.AccessLog;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -23,13 +22,13 @@ import java.util.List;
 @SuperBuilder
 public class Employee extends User {
 
-    public Employee(String id, String fullName, String phoneNumber, String photo, String address, @Nullable String username, @Nullable String email, @Nullable String password) {
-        super(id, fullName, phoneNumber, photo, address, username, email, password);
+    public Employee(String id, String fullName, String phoneNumber, String address, @Nullable String username, @Nullable String email, @Nullable String password) {
+        super(id, fullName, phoneNumber, address, username, email, password);
         this.maxNumberSamples = 5;
     }
 
-    public Employee(String id, String fullName, String phoneNumber, String photo, String address, int maxNumberSamples) {
-        super(id, fullName, phoneNumber, photo, address, null, null, null);
+    public Employee(String id, String fullName, String phoneNumber, String address, int maxNumberSamples) {
+        super(id, fullName, phoneNumber, address, null, null, null);
         this.maxNumberSamples = maxNumberSamples;
     }
 
@@ -40,10 +39,6 @@ public class Employee extends User {
     @JsonIgnore
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Recognition> recognitions;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<FingerprintSample> fingerprintSamples;
 
     private int maxNumberSamples;
 }

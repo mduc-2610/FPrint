@@ -54,16 +54,4 @@ public class FingerprintRecognitionController {
                     .body(Map.of("error", "An unexpected error occurred: " + e.getMessage()));
         }
     }
-
-    @GetMapping("/by-recognition-model/{modelId}")
-    public ResponseEntity<List<Recognition>> getRecognitionsByRecognitionModel(@PathVariable String modelId) {
-        List<Recognition> recognitions = recognitionRepository.findByFingerprintRecognitionModelId(modelId);
-        return ResponseEntity.ok(recognitions);
-    }
-
-    @GetMapping("/by-segmentation-model/{modelId}")
-    public ResponseEntity<List<Recognition>> getRecognitionsBySegmentationModel(@PathVariable String modelId) {
-        List<Recognition> recognitions = recognitionRepository.findByFingerprintSegmentationModelId(modelId);
-        return ResponseEntity.ok(recognitions);
-    }
 }

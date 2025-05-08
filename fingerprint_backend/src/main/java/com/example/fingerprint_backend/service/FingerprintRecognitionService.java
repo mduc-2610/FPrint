@@ -6,7 +6,6 @@ import com.example.fingerprint_backend.model.access.AreaAccess;
 import com.example.fingerprint_backend.model.auth.Employee;
 import com.example.fingerprint_backend.model.biometrics.fingerprint.FingerprintSegmentationModel;
 import com.example.fingerprint_backend.model.biometrics.fingerprint.FingerprintRecognitionModel;
-import com.example.fingerprint_backend.model.biometrics.fingerprint.FingerprintSample;
 import com.example.fingerprint_backend.model.biometrics.recognition.Recognition;
 import com.example.fingerprint_backend.model.biometrics.recognition.RecognitionResult;
 import com.example.fingerprint_backend.repository.access.AccessLogRepository;
@@ -14,7 +13,6 @@ import com.example.fingerprint_backend.repository.access.AreaAccessRepository;
 import com.example.fingerprint_backend.repository.auth.EmployeeRepository;
 import com.example.fingerprint_backend.repository.biometrics.fingerprint.FingerprintSegmentationModelRepository;
 import com.example.fingerprint_backend.repository.biometrics.fingerprint.FingerprintRecognitionModelRepository;
-import com.example.fingerprint_backend.repository.biometrics.fingerprint.FingerprintSampleRepository;
 import com.example.fingerprint_backend.repository.biometrics.recognition.RecognitionRepository;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -46,7 +44,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class FingerprintRecognitionService {
 
-    @Value("${fingerprint.api.url:http://localhost:5000}")
+    @Value("${fingerprint.api.url}")
     private String fingerprintApiUrl;
 
     private final EmployeeRepository employeeRepository;
@@ -55,7 +53,6 @@ public class FingerprintRecognitionService {
     private final RecognitionRepository recognitionRepository;
     private final AccessLogRepository accessLogRepository;
     private final AreaAccessRepository areaAccessRepository;
-    private final FingerprintSampleRepository fingerprintSampleRepository;
 
     @Autowired
     private final RestTemplate restTemplate;
@@ -79,7 +76,6 @@ public class FingerprintRecognitionService {
         try {
             byte[] fileBytes = fingerprintImage.getBytes();
 
-            // Chuẩn bị yêu cầu HTTP
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
@@ -95,7 +91,6 @@ public class FingerprintRecognitionService {
 
             HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-            // Gửi yêu cầu đến API
             ResponseEntity<String> response = restTemplate.postForEntity(
                     fingerprintApiUrl + "/api/recognize",
                     requestEntity,
@@ -191,11 +186,6 @@ public class FingerprintRecognitionService {
                 }
             }
             Boolean isActive = false;
-            FingerprintSample fingerprintSample = fingerprintSampleRepository.findById(result.getFingerprintId())
-                    .orElseThrow(() -> new Exception("Fingerprint sample not found with id: " + result.getFingerprintId()));
-            if(fingerprintSample.isActive()){
-                isActive = true;
-            }
             response.put("active", isActive);
             response.put("accessable", isAccessable);
             response.put("employeeId", result.getEmployeeId());
@@ -207,7 +197,6 @@ public class FingerprintRecognitionService {
                 response.put("employee", null);
             }
         } else {
-            // If not a match, set employee to null
             response.put("employee", null);
         }
 
@@ -219,7 +208,7 @@ public class FingerprintRecognitionService {
             String employeeId,
             Area area,
             String accessType,
-            boolean isMatched,  // This now comes directly from Python server
+            boolean isMatched,
             double confidence,
             String segmentationModelId,
             String recognitionModelId) {

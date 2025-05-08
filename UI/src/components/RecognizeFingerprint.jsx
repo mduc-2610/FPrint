@@ -267,8 +267,8 @@ export function RecognizeFingerprint() {
                                 </div>
 
                                 <p>Độ Chính Xác: {(recognitionResult.confidence * 100).toFixed(2)}%</p>
-                                <p>Thời Gian: {new Date(recognitionResult.accessLog.timestamp).toLocaleString()}</p>
-                                <p>Khu Vực: {recognitionResult.accessLog.area?.name || 'Không xác định'}</p>
+                                <p>Thời Gian: {recognitionResult.accessLog?.timestamp ? new Date(recognitionResult.accessLog?.timestamp).toLocaleString() : 'N/A'}</p>
+                                <p>Khu Vực: {recognitionResult.accessLog?.area?.name || 'Không xác định'}</p>
                                 <p>Loại Truy Cập: {selectedAccessType}</p>
                             </div>
                         </div>
@@ -277,8 +277,8 @@ export function RecognizeFingerprint() {
                             <h3 className="text-lg font-semibold mb-2">Nhận Dạng Thất Bại</h3>
                             <p>Không tìm thấy dấu vân tay phù hợp</p>
                             <p>Độ Chính Xác: {(recognitionResult.confidence * 100).toFixed(2)}%</p>
-                            <p>Thời Gian: {new Date(recognitionResult.accessLog.timestamp).toLocaleString()}</p>
-                            <p>Khu Vực: {recognitionResult.accessLog.area?.name || 'Không xác định'}</p>
+                            <p>Thời Gian: {recognitionResult.accessLog?.timestamp ? new Date(recognitionResult.accessLog?.timestamp).toLocaleString() : 'N/A'}</p>
+                            <p>Khu Vực: {recognitionResult.accessLog?.area?.name || 'Không xác định'}</p>
                             <p>Loại Truy Cập: {selectedAccessType}</p>
                         </div>
                     )}

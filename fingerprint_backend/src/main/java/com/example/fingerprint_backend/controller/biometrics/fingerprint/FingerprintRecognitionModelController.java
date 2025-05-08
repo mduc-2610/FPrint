@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/fingerprint-recognition-model")
 public class FingerprintRecognitionModelController
-        extends ModelController<FingerprintRecognitionModel, String, FingerprintRecognitionModelRepository> {
+        extends ModelController<FingerprintRecognitionModel, String> {
     @Autowired
     private RecognitionRepository recognitionRepository;
 
@@ -21,13 +21,4 @@ public class FingerprintRecognitionModelController
         super(repository);
     }
 
-    @Override
-    protected int calculateTotalUsage(Model model) {
-        return recognitionRepository.countByFingerprintRecognitionModel((FingerprintRecognitionModel) model);
-    }
-
-    @Override
-    protected float calculateAverageConfidence(Model model) {
-        return recognitionRepository.findAverageConfidenceByFingerprintRecognitionModel((FingerprintRecognitionModel) model);
-    }
 }

@@ -1,12 +1,9 @@
 package com.example.fingerprint_backend.controller.auth;
 
-import com.example.fingerprint_backend.model.access.AccessLog;
 import com.example.fingerprint_backend.model.analytics.EmployeeStatistics;
 import com.example.fingerprint_backend.model.auth.Employee;
-import com.example.fingerprint_backend.model.biometrics.fingerprint.FingerprintSample;
 import com.example.fingerprint_backend.repository.access.AccessLogRepository;
 import com.example.fingerprint_backend.repository.auth.EmployeeRepository;
-import com.example.fingerprint_backend.repository.biometrics.fingerprint.FingerprintSampleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -21,9 +18,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class EmployeeController {
 
-    private final FingerprintSampleRepository fingerprintSampleRepository;
     private final EmployeeRepository employeeRepository;
-    private final AccessLogRepository accessLogRepository;
 
 
     @GetMapping
@@ -60,15 +55,6 @@ public class EmployeeController {
         }
         employeeRepository.deleteById(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/{id}/fingerprint-samples")
-    public ResponseEntity<List<FingerprintSample>> getEmployeeFingerprintSamples(@PathVariable String id) {
-        if (!employeeRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-        List<FingerprintSample> samples = fingerprintSampleRepository.findByEmployeeId(id);
-        return ResponseEntity.ok(samples);
     }
 
     @GetMapping("/statistics")
