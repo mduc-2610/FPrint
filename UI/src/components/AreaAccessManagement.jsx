@@ -10,7 +10,6 @@ export function AreaAccessManagement() {
     const [selectedArea, setSelectedArea] = useState('');
     const [error, setError] = useState(null);
 
-    // Tải danh sách nhân viên và khu vực
     useEffect(() => {
         const loadInitialData = async () => {
             try {
@@ -28,7 +27,6 @@ export function AreaAccessManagement() {
         loadInitialData();
     }, []);
 
-    // Tải quyền truy cập khi chọn nhân viên
     useEffect(() => {
         const loadEmployeeAccess = async () => {
             if (selectedEmployee) {
@@ -44,7 +42,6 @@ export function AreaAccessManagement() {
         loadEmployeeAccess();
     }, [selectedEmployee]);
 
-    // Cấp quyền truy cập
     const handleGrantAccess = async () => {
         if (!selectedEmployee || !selectedArea) {
             setError('Vui lòng chọn nhân viên và khu vực');
@@ -54,11 +51,9 @@ export function AreaAccessManagement() {
         try {
             await apiService.grantAccess(selectedEmployee.id, selectedArea);
 
-            // Tải lại danh sách quyền truy cập
             const response = await apiService.getEmployeeAccess(selectedEmployee.id);
             setAccessPermissions(response);
 
-            // Đặt lại khu vực đã chọn
             setSelectedArea('');
             setError(null);
         } catch (error) {
@@ -74,11 +69,9 @@ export function AreaAccessManagement() {
         try {
             await apiService.grantAccessForAllArea(selectedEmployee.id, selectedArea);
 
-            // Tải lại danh sách quyền truy cập
             const response = await apiService.getEmployeeAccess(selectedEmployee.id);
             setAccessPermissions(response);
 
-            // Đặt lại khu vực đã chọn
             setSelectedArea('');
             setError(null);
         } catch (error) {
@@ -86,12 +79,10 @@ export function AreaAccessManagement() {
         }
     };
 
-    // Thu hồi quyền truy cập
     const handleRevokeAccess = async (accessId) => {
         try {
             await apiService.revokeAccess(accessId);
 
-            // Tải lại danh sách quyền truy cập
             if (selectedEmployee) {
                 const response = await apiService.getEmployeeAccess(selectedEmployee.id);
                 setAccessPermissions(response);

@@ -1,19 +1,19 @@
 package com.example.fingerprint_backend.service;
 
-import com.example.fingerprint_backend.model.access.AccessLog;
-import com.example.fingerprint_backend.model.access.Area;
-import com.example.fingerprint_backend.model.access.AreaAccess;
-import com.example.fingerprint_backend.model.auth.Employee;
-import com.example.fingerprint_backend.model.biometrics.fingerprint.FingerprintSegmentationModel;
-import com.example.fingerprint_backend.model.biometrics.fingerprint.FingerprintRecognitionModel;
-import com.example.fingerprint_backend.model.biometrics.recognition.Recognition;
-import com.example.fingerprint_backend.model.biometrics.recognition.RecognitionResult;
-import com.example.fingerprint_backend.repository.access.AccessLogRepository;
-import com.example.fingerprint_backend.repository.access.AreaAccessRepository;
-import com.example.fingerprint_backend.repository.auth.EmployeeRepository;
-import com.example.fingerprint_backend.repository.biometrics.fingerprint.FingerprintSegmentationModelRepository;
-import com.example.fingerprint_backend.repository.biometrics.fingerprint.FingerprintRecognitionModelRepository;
-import com.example.fingerprint_backend.repository.biometrics.recognition.RecognitionRepository;
+import com.example.fingerprint_backend.model.AccessLog;
+import com.example.fingerprint_backend.model.Area;
+import com.example.fingerprint_backend.model.AreaAccess;
+import com.example.fingerprint_backend.model.Employee;
+import com.example.fingerprint_backend.model.FingerprintSegmentationModel;
+import com.example.fingerprint_backend.model.FingerprintRecognitionModel;
+import com.example.fingerprint_backend.model.Recognition;
+import com.example.fingerprint_backend.model.RecognitionResult;
+import com.example.fingerprint_backend.repository.AccessLogRepository;
+import com.example.fingerprint_backend.repository.AreaAccessRepository;
+import com.example.fingerprint_backend.repository.EmployeeRepository;
+import com.example.fingerprint_backend.repository.FingerprintSegmentationModelRepository;
+import com.example.fingerprint_backend.repository.FingerprintRecognitionModelRepository;
+import com.example.fingerprint_backend.repository.RecognitionRepository;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -185,8 +185,6 @@ public class FingerprintRecognitionService {
                     break;
                 }
             }
-            Boolean isActive = false;
-            response.put("active", isActive);
             response.put("accessable", isAccessable);
             response.put("employeeId", result.getEmployeeId());
 

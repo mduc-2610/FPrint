@@ -50,6 +50,13 @@ export function RecognizeFingerprint() {
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
+        
+        if (!file) {
+            setFingerprintFile(null);
+            setPreviewImage(null);
+            return;
+        }
+        
         setFingerprintFile(file);
     
         if (file.name.toLowerCase().endsWith('.tif') || file.name.toLowerCase().endsWith('.tiff')) {
@@ -123,9 +130,7 @@ export function RecognizeFingerprint() {
             if (!recognitionResult.employee) {
                 setNotification("Không tìm thấy nhân viên nào khớp với dấu vân tay này");
             }
-            else if (!recognitionResult.active) {
-                setNotification("Dấu vân tay không hoạt động");
-            } else if (!recognitionResult.accessable) {
+            else if (!recognitionResult.accessable) {
                 setNotification("Dấu vân tay không có quyền truy cập vào khu vực này");
             } else if (recognitionResult.authorized) {
                 setNotification("Dấu vân tay đã được xác nhận thành công");
@@ -242,11 +247,11 @@ export function RecognizeFingerprint() {
                     {recognitionResult.matched ? (
                         <div className={`
                             p-4 rounded-lg 
-                            ${recognitionResult.authorized && recognitionResult.accessable && recognitionResult.active ? 'bg-green-50 border-green-200' : 'bg-yellow-50 border-yellow-200'}
+                            ${recognitionResult.authorized && recognitionResult.accessable ? 'bg-green-50 border-green-200' : 'bg-yellow-50 border-yellow-200'}
                         `}>
                             <h3 className={`
                                 text-lg font-semibold mb-2 
-                                ${recognitionResult.authorized && recognitionResult.accessable && recognitionResult.active ? 'text-green-700' : 'text-yellow-700'}
+                                ${recognitionResult.authorized && recognitionResult.accessable ? 'text-green-700' : 'text-yellow-700'}
                             `}>
                                 {notification}
                             </h3>

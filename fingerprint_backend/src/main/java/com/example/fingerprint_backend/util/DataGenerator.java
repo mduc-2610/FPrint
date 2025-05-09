@@ -1,17 +1,14 @@
 package com.example.fingerprint_backend.util;
 
-import com.example.fingerprint_backend.model.access.Area;
-import com.example.fingerprint_backend.model.auth.Admin;
-import com.example.fingerprint_backend.model.auth.Employee;
-import com.example.fingerprint_backend.model.biometrics.fingerprint.*;
-import com.example.fingerprint_backend.repository.access.AccessLogRepository;
-import com.example.fingerprint_backend.repository.access.AreaRepository;
-import com.example.fingerprint_backend.repository.auth.AdminRepository;
-import com.example.fingerprint_backend.repository.auth.EmployeeRepository;
-import com.example.fingerprint_backend.repository.base.UserRepository;
-import com.example.fingerprint_backend.repository.biometrics.fingerprint.FingerprintRecognitionModelRepository;
-import com.example.fingerprint_backend.repository.biometrics.fingerprint.FingerprintSegmentationModelRepository;
-import com.example.fingerprint_backend.repository.biometrics.recognition.RecognitionRepository;
+import com.example.fingerprint_backend.model.*;
+import com.example.fingerprint_backend.repository.AccessLogRepository;
+import com.example.fingerprint_backend.repository.AreaRepository;
+import com.example.fingerprint_backend.repository.AdminRepository;
+import com.example.fingerprint_backend.repository.EmployeeRepository;
+import com.example.fingerprint_backend.repository.UserRepository;
+import com.example.fingerprint_backend.repository.FingerprintRecognitionModelRepository;
+import com.example.fingerprint_backend.repository.FingerprintSegmentationModelRepository;
+import com.example.fingerprint_backend.repository.RecognitionRepository;
 import com.github.javafaker.Faker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
