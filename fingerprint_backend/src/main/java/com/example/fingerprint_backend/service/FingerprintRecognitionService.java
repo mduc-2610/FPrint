@@ -1,19 +1,7 @@
 package com.example.fingerprint_backend.service;
 
-import com.example.fingerprint_backend.model.AccessLog;
-import com.example.fingerprint_backend.model.Area;
-import com.example.fingerprint_backend.model.AreaAccess;
-import com.example.fingerprint_backend.model.Employee;
-import com.example.fingerprint_backend.model.FingerprintSegmentationModel;
-import com.example.fingerprint_backend.model.FingerprintRecognitionModel;
-import com.example.fingerprint_backend.model.Recognition;
-import com.example.fingerprint_backend.model.RecognitionResult;
-import com.example.fingerprint_backend.repository.AccessLogRepository;
-import com.example.fingerprint_backend.repository.AreaAccessRepository;
-import com.example.fingerprint_backend.repository.EmployeeRepository;
-import com.example.fingerprint_backend.repository.FingerprintSegmentationModelRepository;
-import com.example.fingerprint_backend.repository.FingerprintRecognitionModelRepository;
-import com.example.fingerprint_backend.repository.RecognitionRepository;
+import com.example.fingerprint_backend.model.*;
+import com.example.fingerprint_backend.repository.*;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,9 +23,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -48,27 +34,18 @@ public class FingerprintRecognitionService {
     private String fingerprintApiUrl;
 
     private final EmployeeRepository employeeRepository;
-    private final FingerprintSegmentationModelRepository segmentationModelRepository;
-    private final FingerprintRecognitionModelRepository recognitionModelRepository;
     private final RecognitionRepository recognitionRepository;
     private final AccessLogRepository accessLogRepository;
     private final AreaAccessRepository areaAccessRepository;
+    private final AreaRepository areaRepository;
 
     @Autowired
     private final RestTemplate restTemplate;
 
     public RecognitionResult recognizeFingerprint(
             MultipartFile fingerprintImage,
-            String segmentationModelId,
-            String recognitionModelId) throws Exception {
-
-        Optional<FingerprintSegmentationModel> segModelOpt = segmentationModelRepository.findById(segmentationModelId);
-        FingerprintSegmentationModel segmentationModel = segModelOpt
-                .orElseThrow(() -> new Exception("Segmentation model with ID " + segmentationModelId + " not found"));
-
-        Optional<FingerprintRecognitionModel> recModelOpt = recognitionModelRepository.findById(recognitionModelId);
-        FingerprintRecognitionModel recognitionModel = recModelOpt
-                .orElseThrow(() -> new Exception("Recognition model with ID " + recognitionModelId + " not found"));
+            FingerprintSegmentationModel segmentationModel,
+            FingerprintRecognitionModel recognitionModel) throws Exception {
 
         String segmentationModelPath = segmentationModel.getPathName();
         String recognitionModelPath = recognitionModel.getPathName();
@@ -143,91 +120,44 @@ public class FingerprintRecognitionService {
     }
 
     @Transactional
-    public Map<String, Object> processRecognition(
-            MultipartFile fingerprintImage,
-            String segmentationModelId,
-            String recognitionModelId,
-            Area area,
-            String accessType) throws Exception {
-
-        Map<String, Object> response = new HashMap<>();
-
+    public RecognitionResponse processRecognition(RecognitionRequest request) throws Exception {
         RecognitionResult result = recognizeFingerprint(
-                fingerprintImage,
-                segmentationModelId,
-                recognitionModelId);
+                request.getFile(),
+                request.getSegmentationModel(),
+                request.getRecognitionModel());
 
         if (result == null) {
             throw new Exception("Fingerprint recognition failed");
         }
 
-        AccessLog accessLog = createAccessLog(
-                result.getEmployeeId(),
-                area,
-                accessType,
-                result.isMatch(),
-                result.getConfidence(),
-                segmentationModelId,
-                recognitionModelId);
-
-        response.put("matched", result.isMatch());
-        response.put("confidence", result.getConfidence());
-        response.put("accessLog", accessLog);
-        response.put("authorized", accessLog.isAuthorized());
-
-
-        if (result.isMatch()) {
-            List<AreaAccess> areaAccessList = areaAccessRepository.findByEmployeeId(result.getEmployeeId());
-            var isAccessable = false;
-            for (AreaAccess areaAccess : areaAccessList) {
-                if (areaAccess.getArea().getId().equals(area.getId())) {
-                    isAccessable = true;
-                    break;
-                }
-            }
-            response.put("accessable", isAccessable);
-            response.put("employeeId", result.getEmployeeId());
-
-            Optional<Employee> employee = employeeRepository.findById(result.getEmployeeId());
-            if (employee.isPresent()) {
-                response.put("employee", employee.get());
-            } else {
-                response.put("employee", null);
-            }
-        } else {
-            response.put("employee", null);
-        }
-
-        return response;
-    }
-
-    @Transactional
-    public AccessLog createAccessLog(
-            String employeeId,
-            Area area,
-            String accessType,
-            boolean isMatched,
-            double confidence,
-            String segmentationModelId,
-            String recognitionModelId) {
-
         LocalDateTime now = LocalDateTime.now();
+        Optional<Area> areaOpt = areaRepository.findById(request.getArea().getId());
+        if (areaOpt.isEmpty()) {
+            throw new IllegalArgumentException("Area with ID " + request.getArea().getId() + " not found");
+        }
+        Area area = areaOpt.get();
 
         AccessLog accessLog = AccessLog.builder()
                 .area(area)
                 .timestamp(now)
-                .accessType(accessType)
+                .accessType(request.getAccessType())
                 .build();
 
-        if (isMatched && employeeId != null) {
-            Optional<Employee> employeeOpt = employeeRepository.findById(employeeId);
+        Employee employee = null;
+        boolean isAccessible = false;
+
+        if (result.isMatch() && result.getEmployeeId() != null) {
+            Optional<Employee> employeeOpt = employeeRepository.findById(result.getEmployeeId());
 
             if (employeeOpt.isPresent()) {
-                Employee employee = employeeOpt.get();
+                employee = employeeOpt.get();
                 accessLog.setEmployee(employee);
 
-                boolean authorized = determineAuthorization(employee, area);
-                accessLog.setAuthorized(authorized);
+                List<AreaAccess> areaAccessList = areaAccessRepository.findByEmployeeId(employee.getId());
+                isAccessible = areaAccessList.stream()
+                        .anyMatch(areaAccess -> areaAccess.getArea().getId().equals(area.getId()));
+
+                accessLog.setAuthorized(isAccessible);
             } else {
                 accessLog.setAuthorized(false);
                 accessLog.setEmployee(null);
@@ -240,54 +170,34 @@ public class FingerprintRecognitionService {
         AccessLog savedAccessLog = accessLogRepository.save(accessLog);
 
         try {
-            FingerprintSegmentationModel segmentationModel = segmentationModelRepository.findById(segmentationModelId)
-                    .orElseThrow(() -> new Exception("Segmentation model not found"));
-
-            FingerprintRecognitionModel recognitionModel = recognitionModelRepository.findById(recognitionModelId)
-                    .orElseThrow(() -> new Exception("Recognition model not found"));
-
-            Employee employee = null;
-            // Only create recognition record with employee if matched according to Python server
-            if (isMatched && employeeId != null) {
-                employee = employeeRepository.findById(employeeId).orElse(null);
-            }
-
             Recognition recognition = Recognition.builder()
                     .employee(employee)
-                    .accessLog(savedAccessLog) // Link to access log
-                    .fingerprintSegmentationModel(segmentationModel)
-                    .fingerprintRecognitionModel(recognitionModel)
+                    .accessLog(savedAccessLog)
+                    .fingerprintSegmentationModel(request.getSegmentationModel())
+                    .fingerprintRecognitionModel(request.getRecognitionModel())
                     .timestamp(now)
-                    .confidence((float) confidence)
+                    .confidence((float) result.getConfidence())
                     .build();
 
             recognitionRepository.save(recognition);
 
         } catch (Exception e) {
             System.err.println("Failed to create recognition record: " + e.getMessage());
+            e.printStackTrace();
         }
 
-        return savedAccessLog;
+        RecognitionResponse.RecognitionResponseBuilder responseBuilder = RecognitionResponse.builder()
+                .matched(result.isMatch())
+                .confidence(result.getConfidence())
+                .accessLog(savedAccessLog)
+                .authorized(savedAccessLog.isAuthorized());
+
+        if (result.isMatch() && employee != null) {
+            responseBuilder.accessable(isAccessible);
+            responseBuilder.employeeId(result.getEmployeeId());
+            responseBuilder.employee(employee);
+        }
+
+        return responseBuilder.build();
     }
-
-    private boolean determineAuthorization(Employee employee, Area area) {
-        if (area == null) {
-            return true;
-        }
-
-        if (employee == null) {
-            return false;
-        }
-
-        List<AreaAccess> areaAccessList = areaAccessRepository.findByEmployeeId(employee.getId());
-
-        for (AreaAccess areaAccess : areaAccessList) {
-            if (areaAccess.getArea().getId().equals(area.getId())) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
 }

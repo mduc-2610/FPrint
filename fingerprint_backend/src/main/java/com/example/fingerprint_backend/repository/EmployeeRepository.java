@@ -14,7 +14,7 @@ import java.util.Optional;
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, String> {
     @Query("SELECT new Employee(e.id, e.fullName, e.phoneNumber, e.address, e.maxNumberSamples) FROM Employee e")
-    List<Employee> findAllEmployees();
+    List<Employee> findAll();
 
     @Query("SELECT new Employee(e.id, e.fullName, e.phoneNumber, e.address, e.maxNumberSamples) FROM Employee e WHERE e.id = :id")
     Optional<Employee> findById(String id);

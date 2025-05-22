@@ -25,9 +25,14 @@ public class AreaAccess {
     private Area area;
 
     @ManyToOne
-    @JsonIgnore
     @JoinColumn(name = "employee_id")
     private Employee employee;
 
     private LocalDateTime timestamp;
+
+    public AreaAccess(String id, Area area, LocalDateTime timestamp) {
+        this.id = id;
+        this.area = area;
+        this.timestamp = timestamp;
+    }
 }

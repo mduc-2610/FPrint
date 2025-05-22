@@ -1,0 +1,16 @@
+/dataset
+./fingerprint_training/env
+./fingerprint_training/finger_region/output
+/fingerprint_models
+./fingerprint_training/fingerprint_recognition/dataset
+# ./fingerprint_training/fingerprint_recognition/prompt.py
+./fingerprint_training/fingerprint_results
+./fingerprint_training/reports
+/embedding_models
+./fingerprint_training/fingerprint_adapting_test_dataset
+/processed_fingerprints
+./fingerprint_training/DB2_B
+/employee_fingerprint
+microservice/fingerprint_training
+./__pycache__
+microservice_2/fingerprint_training

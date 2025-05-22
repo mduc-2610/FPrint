@@ -1,0 +1,11 @@
+[
+    {
+        "name": "UNet Segmentation v1_0",
+        "path_name": "unet_segmentation_v1_0",
+        "accuracy": 0.99408092101415,
+        "valAccuracy": 0.9957652529080708,
+        "createdAt": "2025-03-23T14:46:13.276231",
+        "updatedAt": "2025-03-23T14:46:13.276231",
+        "version": "1.0"
+    }
+]

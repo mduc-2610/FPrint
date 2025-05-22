@@ -27,28 +27,4 @@ public class AreaController {
         return area.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-
-    @PostMapping
-    public Area createArea(@RequestBody Area area) {
-        return areaRepository.save(area);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Area> updateArea(@PathVariable String id, @RequestBody Area area) {
-        if (!areaRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-        area.setId(id);
-        return ResponseEntity.ok(areaRepository.save(area));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteArea(@PathVariable String id) {
-        if (!areaRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-        areaRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
-    }
-
 }

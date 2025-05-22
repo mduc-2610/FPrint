@@ -1,0 +1,11 @@
+[
+    {
+        "name": "Siamese Network v1_0",
+        "path_name": "siamese_network_v1_0",
+        "accuracy": 0.9507028937339783,
+        "valAccuracy": 0.9539023041725159,
+        "createdAt": "2025-03-23T14:46:13.442135",
+        "updatedAt": "2025-03-23T14:46:13.442135",
+        "version": "1.0"
+    }
+]
